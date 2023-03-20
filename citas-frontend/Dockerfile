@@ -23,4 +23,4 @@ USER 1001
 
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
 EXPOSE 5000
-CMD ["pytgon3", "app.py"]
+CMD ["python3", "app.py"]
