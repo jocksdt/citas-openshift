@@ -22,4 +22,5 @@ ADD . /app
 USER 1001 
 
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
+EXPOSE 5000
+CMD ["pytgon3", "app.py"]
