@@ -6,7 +6,7 @@ app = Flask(__name__)
 @app.route('/',methods=["GET"])
 def inicio():
     noserver=False
-    lista=[]
+    datos=""
     
     try:
         server=os.environ["CITAS_SERVER"]
