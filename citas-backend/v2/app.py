@@ -1,5 +1,5 @@
 import flask
-from flask import request, jsonify
+from flask import jsonify, make_response
 import random
 import os
 import socket
@@ -19,11 +19,14 @@ def home():
 
 @app.route('/version', methods=['GET'])
 def version():
-    return prepareResponse(jsonify("2.0.0"))
-
+    response = make_response("v2")
+    response.mimetype = "text/plain"
+    return prepareResponse(response)
 @app.route('/writtenin', methods=['GET'])
 def writtenin():
-    return prepareResponse(jsonify("Python"))
+    response = make_response("Python 3.8")
+    response.mimetype = "text/plain"
+    return prepareResponse(response)
 
 @app.route('/health', methods=['GET'])
 def health():
@@ -42,11 +45,10 @@ def getQuoteById(id):
 def getRandom():
     try:
         conn = mariadb.connect(
-            user="root",
-            password="admin",
-            host=os.environ['DB_SERVICE_NAME'],
-#            host="mysql",
-            database="quotesdb",
+            user=os.environ['USER_DB'],
+            password=os.environ['PASSWORD_DB'],
+            host=os.environ['HOST_DB'],
+            database="citas",
             port=3306)
         
         mycursor = conn.cursor(dictionary=True)
@@ -74,10 +76,10 @@ def main():
     global quotes
     try:
         conn = mariadb.connect(
-            user="root",
-            password="admin",
-            host=os.environ['DB_SERVICE_NAME'],
-            database="quotesdb",
+            user=os.environ['USER_DB'],
+            password=os.environ['PASSWORD_DB'],
+            host=os.environ['HOST_DB'],
+            database="citas",
             port=3306)
         mycursor = conn.cursor(dictionary=True)
         mycursor.execute("SELECT '-hostname-' as hostname, id, quotation, author FROM quotes ORDER BY author, id")
@@ -88,4 +90,4 @@ def main():
         sys.exit(1)
 
 if __name__ == '__main__':
-    app.run(host="localhost", port=10000)
+    app.run(host="0.0.0.0", port=10000)
