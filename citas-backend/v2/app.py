@@ -5,7 +5,7 @@ import os
 import socket
 import json
 import sys
-import mariadb
+from MySQLdb import _mysql
 
 quotes = []
 quoteCount = 0
