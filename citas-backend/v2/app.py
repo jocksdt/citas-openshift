@@ -51,7 +51,7 @@ def getRandom():
             database="citas",
             port=3306)
         
-        mycursor = conn.cursor(dictionary=True)
+        mycursor = conn.cursor()
         mycursor.execute("SELECT '-hostname-' as hostname, id, quotation, author FROM quotes ORDER BY author, id")
         
         rows = mycursor.fetchall()
@@ -82,7 +82,7 @@ def main():
             host=os.environ['HOST_DB'],
             database="citas",
             port=3306)
-        mycursor = conn.cursor(dictionary=True)
+        mycursor = conn.cursor()
         mycursor.execute("SELECT '-hostname-' as hostname, id, quotation, author FROM quotes ORDER BY author, id")
         quotes = mycursor.fetchall()
         
