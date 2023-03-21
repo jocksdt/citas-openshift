@@ -48,7 +48,7 @@ def version():
 
 @app.route('/writtenin', methods=['GET'])
 def writtenin():
-    response = make_response("Python 3.8")
+    response = make_response("Python 3.9")
     response.mimetype = "text/plain"
     return prepareResponse(response)
 
