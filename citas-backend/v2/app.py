@@ -60,7 +60,7 @@ def getRandom():
         conn.close()
         quotes = rows
         return prepareResponse(jsonify(replaceHostname(quotes[n])))
-    except _mysql.connect.Error as e:
+    except:
         print(f"Error connecting to MariaDB Platform: {e}")
         sys.exit(1)
 
@@ -87,7 +87,7 @@ def main():
         #mycursor.execute("SELECT '-hostname-' as hostname, id, quotation, author FROM quotes ORDER BY author, id")
         quotes = mycursor.fetchall()
         conn.close()
-    except _mysql.connect.Error as e:
+    except:
         print(f"Error connecting to MariaDB Platform: {e}")
         sys.exit(1)
 
