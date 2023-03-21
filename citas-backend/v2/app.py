@@ -43,7 +43,7 @@ def getQuoteById(id):
 
 @app.route('/quotes/random', methods=['GET'])
 def getRandom():
-    tquotes = getQuotes()
+    quotes = getQuotes()
     n = random.randint(0,len(quotes)-1)
     return prepareResponse(jsonify(replaceHostname(quotes[n])))
     
