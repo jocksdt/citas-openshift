@@ -13,10 +13,13 @@ def inicio():
         url="http://"+server+"/quotes/random"
         r=requests.get(url, timeout=1)
         datos=r.json()
+        url="http://"+server+"/version"
+        r=requests.get(url, timeout=1)
+        version=r.json()
     except:
         noserver=True
  
-    return render_template("inicio.html",noserver=noserver,datos=datos)
+    return render_template("inicio.html",noserver=noserver,datos=datos,version=version)
 
 
 app.run('0.0.0.0',5000,debug=True)
