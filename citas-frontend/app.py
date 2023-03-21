@@ -7,7 +7,7 @@ app = Flask(__name__)
 def inicio():
     noserver=False
     datos=""
-    
+    version=""
     try:
         server=os.environ["CITAS_SERVER"]
         url="http://"+server+"/quotes/random"
@@ -15,7 +15,8 @@ def inicio():
         datos=r.json()
         url="http://"+server+"/version"
         r=requests.get(url, timeout=1)
-        version=r.json()
+        print(r.text)
+        version=r.text
     except:
         noserver=True
  
