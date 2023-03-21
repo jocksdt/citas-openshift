@@ -44,21 +44,23 @@ def getQuoteById(id):
 @app.route('/quotes/random', methods=['GET'])
 def getRandom():
     try:
-        conn = mariadb.connect(
+        conn = _mysql.connect.connect(
             user=os.environ['USER_DB'],
             password=os.environ['PASSWORD_DB'],
             host=os.environ['HOST_DB'],
             database="citas",
             port=3306)
         
-        mycursor = conn.cursor(dictionary=True)
-        mycursor.execute("SELECT '-hostname-' as hostname, id, quotation, author FROM quotes ORDER BY author, id")
-        rows = mycursor.fetchall()
+        #mycursor = conn.cursor(dictionary=True)
+        #mycursor.execute("SELECT '-hostname-' as hostname, id, quotation, author FROM quotes ORDER BY author, id")
+        db.query("SELECT '-hostname-' as hostname, id, quotation, author FROM quotes ORDER BY author, id")
+        #rows = mycursor.fetchall()
+        rows=db.store_result()
         n = random.randint(0,(mycursor.rowcount)-1)
         conn.close()
         quotes = rows
         return prepareResponse(jsonify(replaceHostname(quotes[n])))
-    except mariadb.Error as e:
+    except _mysql.connect.Error as e:
         print(f"Error connecting to MariaDB Platform: {e}")
         sys.exit(1)
 
@@ -75,17 +77,17 @@ def replaceHostname(jsondoc):
 def main():
     global quotes
     try:
-        conn = mariadb.connect(
+        conn = _mysql.connect.connect(
             user=os.environ['USER_DB'],
             password=os.environ['PASSWORD_DB'],
             host=os.environ['HOST_DB'],
             database="citas",
             port=3306)
-        mycursor = conn.cursor(dictionary=True)
-        mycursor.execute("SELECT '-hostname-' as hostname, id, quotation, author FROM quotes ORDER BY author, id")
+        #mycursor = conn.cursor(dictionary=True)
+        #mycursor.execute("SELECT '-hostname-' as hostname, id, quotation, author FROM quotes ORDER BY author, id")
         quotes = mycursor.fetchall()
         conn.close()
-    except mariadb.Error as e:
+    except _mysql.connect.Error as e:
         print(f"Error connecting to MariaDB Platform: {e}")
         sys.exit(1)
 
