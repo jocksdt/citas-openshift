@@ -5,7 +5,7 @@ import os
 import socket
 import json
 import sys
-from MySQLdb import _mysql
+import MySQLdb
 
 quotes = []
 quoteCount = 0
@@ -44,24 +44,23 @@ def getQuoteById(id):
 @app.route('/quotes/random', methods=['GET'])
 def getRandom():
     try:
-        conn = _mysql.connect.connect(
+        conn = MySQLdb.connect(
             user=os.environ['USER_DB'],
             password=os.environ['PASSWORD_DB'],
             host=os.environ['HOST_DB'],
             database="citas",
             port=3306)
         
-        #mycursor = conn.cursor(dictionary=True)
-        #mycursor.execute("SELECT '-hostname-' as hostname, id, quotation, author FROM quotes ORDER BY author, id")
-        db.query("SELECT '-hostname-' as hostname, id, quotation, author FROM quotes ORDER BY author, id")
-        #rows = mycursor.fetchall()
-        rows=db.store_result()
+        mycursor = conn.cursor(dictionary=True)
+        mycursor.execute("SELECT '-hostname-' as hostname, id, quotation, author FROM quotes ORDER BY author, id")
+        
+        rows = mycursor.fetchall()
         n = random.randint(0,(mycursor.rowcount)-1)
         conn.close()
         quotes = rows
         return prepareResponse(jsonify(replaceHostname(quotes[n])))
     except:
-        print(f"Error connecting to MariaDB Platform: {e}")
+        print(f"Error connecting to MariaDB Platform:")
         sys.exit(1)
 
 def prepareResponse(response):
@@ -77,18 +76,17 @@ def replaceHostname(jsondoc):
 def main():
     global quotes
     try:
-        conn = _mysql.connect.connect(
+        conn = MySQLdb.connect(
             user=os.environ['USER_DB'],
             password=os.environ['PASSWORD_DB'],
             host=os.environ['HOST_DB'],
             database="citas",
             port=3306)
-        #mycursor = conn.cursor(dictionary=True)
-        #mycursor.execute("SELECT '-hostname-' as hostname, id, quotation, author FROM quotes ORDER BY author, id")
+        mycursor = conn.cursor(dictionary=True)
+        mycursor.execute("SELECT '-hostname-' as hostname, id, quotation, author FROM quotes ORDER BY author, id")
         quotes = mycursor.fetchall()
-        conn.close()
-    except:
-        print(f"Error connecting to MariaDB Platform: {e}")
+        
+    excet:
         sys.exit(1)
 
 if __name__ == '__main__':
