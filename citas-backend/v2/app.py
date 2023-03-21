@@ -86,7 +86,7 @@ def main():
         mycursor.execute("SELECT '-hostname-' as hostname, id, quotation, author FROM quotes ORDER BY author, id")
         quotes = mycursor.fetchall()
         
-    excet:
+    except:
         sys.exit(1)
 
 if __name__ == '__main__':
