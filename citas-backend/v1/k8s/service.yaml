@@ -10,15 +10,6 @@ spec:
     port: 10000
     protocol: TCP
     targetPort: 10000
-  - name: 8443-tcp
-    port: 8443
-    protocol: TCP
-    targetPort: 8443
-  - name: 8778-tcp
-    port: 8778
-    protocol: TCP
-    targetPort: 8778
   selector:
     app: citas
-  sessionAffinity: None
-  type: NodePort
+  type: ClusterIP
