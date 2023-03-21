@@ -69,6 +69,13 @@ def getQuotes():
         mycursor = conn.cursor()
         mycursor.execute("SELECT '-hostname-' as hostname, id, quotation, author FROM quotes ORDER BY author, id")
         quotes = mycursor.fetchall()
+        result_dict = {}
+        for i, row in enumerate(quotes):
+            row_dict = {}
+            for j, col in enumerate(mycursor.description):
+                row_dict[col[0]] = row[j]
+            result_dict[i] = row_dict
+        quotes=result_dict
         conn.close()
     except:
         sys.exit(1)
