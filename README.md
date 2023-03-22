@@ -198,6 +198,126 @@ Y si accedemos a la página web y vamos refrescando, observamos como se balancea
 
 ![web](img/web2.gif)
 
+## Despliegue de la aplicación `citas-backend` versión 2
+
+Esta versión de la aplicación lle la información de las citas de una tabla de una base de datos en un servidor mariadb, por lo tanto lo primero será el despliegue de la base de datos:
+
+### Despliegue del servidor de base de datos mariadb
+
+Veamos los distintos recursos que vamos a crear para el despliegue de la base de datos:
+
+* Un recurso ConfigMap donde guardamos el usuario (que hemos llamado `usuario`) y el nombre de la base de datos (que hemos llamado `citas`) que se van a crear.
+* Un recurso Secret donde guardamos las contraseñas: la del usuario `usuario` (`usuario_pass`) y la del usuario `root` de la base de datos (`admin`).
+* Un recurso VoolumenPersistentClaim donde solicitamos un volumen de 5G para montar el directorio `var/lib/mysql` del servidor mariadb y por lo tanto hacerla persistente.
+* Un recurso service de tipo ClusterIp para poder acceder internamente a la base de datos.
+* Un recurso deployment par deplegar la base de datos.
+
+Por lo tanto para realizar todo el despliegue ejecutamos desde el directorio `mariadb/k8s`:
+
+```
+kubectl apply -f configmap.yaml 
+kubectl apply -f secret.yaml 
+kubectl apply -f pvc.yaml 
+kubectl apply -f deployment.yaml 
+kubectl apply -f service.yaml 
+```
+
+Vemos todos los recursos creados hasta ahora:
+
+```
+kubectl get all,ingress,pvc,pv
+NAME                                      READY   STATUS    RESTARTS   AGE
+pod/citas-7844596959-6hq6q                1/1     Running   0          60m
+pod/citas-7844596959-d5tfg                1/1     Running   0          38m
+pod/citas-7844596959-x2ckl                1/1     Running   0          38m
+pod/citasweb-5b58c6d6d7-d4tv5             1/1     Running   0          48m
+pod/mariadb-deployment-67c6995686-blk4f   1/1     Running   0          62s
+
+NAME                      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+service/citas             ClusterIP   10.101.211.92    <none>        10000/TCP                    60m
+service/citasweb          ClusterIP   10.105.60.35     <none>        5000/TCP,8443/TCP,8778/TCP   48m
+service/kubernetes        ClusterIP   10.96.0.1        <none>        443/TCP                      83m
+service/mariadb-service   ClusterIP   10.105.170.177   <none>        3306/TCP                     57s
+
+NAME                                 READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/citas                3/3     3            3           60m
+deployment.apps/citasweb             1/1     1            1           48m
+deployment.apps/mariadb-deployment   1/1     1            1           62s
+
+NAME                                            DESIRED   CURRENT   READY   AGE
+replicaset.apps/citas-7844596959                3         3         3       60m
+replicaset.apps/citasweb-5b58c6d6d7             1         1         1       48m
+replicaset.apps/mariadb-deployment-67c6995686   1         1         1       62s
+
+NAME                                 CLASS   HOSTS                       ADDRESS          PORTS   AGE
+ingress.networking.k8s.io/citasweb   nginx   web.192.168.39.229.nip.io   192.168.39.229   80      48m
+
+NAME                                STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+persistentvolumeclaim/mariadb-pvc   Bound    pvc-c22d90fa-b199-417e-ac08-e645caac801c   5Gi        RWO            standard       113s
+
+NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                 STORAGECLASS   REASON   AGE
+persistentvolume/pvc-c22d90fa-b199-417e-ac08-e645caac801c   5Gi        RWO            Delete           Bound    default/mariadb-pvc   standard                113s
+```
+
+A continuación nos queda incializar la base de datos, para ello desde el directorio `mariadb`, vamos a copiar el fichero `citas.csv` donde se encuentran las citas, y el fichero `citas.sql` donde se encuentran las instrucciones para hacer la migación desde el ficheros csv y guardarlo en la tabla que se crea, en el pod de mariadb. Para facilitar el copiado de ficheros vamos a guardar el nombre del pod en una variable de entorno:
+
+```
+export PODNAME="mariadb-deployment-67c6995686-blk4f"
+```
+
+A continuación copiamos los ficheros:
+
+```
+kubectl cp citas.csv $PODNAME:/tmp/
+kubectl cp citas.sql $PODNAME:/tmp/
+```
+
+Y finalmente ejecutamos el fichero sql:
+
+```
+kubectl exec deployment.apps/mariadb-deployment -- bash -c "mysql -uroot -padmin < /tmp/citas.sql"
+```
+
+### Actualización de `citas-backend` a la versión 2
+
+Como hemos dicho anteriormente, la nueva versión lee la información de las cita de la base de datos. El programa hace una conexión a la base de datos, tilizando variables de entorno donde debemos gaurdar las credenciales de acceso. Podemos ver el fragmentoo del código donde se realiza la conexión:
+
+```
+...
+    conn = MySQLdb.connect(
+            user=os.environ['USER_DB'],
+            password=os.environ['PASSWORD_DB'],
+            host=os.environ['HOST_DB'],
+            database="citas",
+            port=3306)
+...
+```
+
+Por lo tanto en el despliegue de `citas-backend` vamos a crear las variables de entorno necesarias. Lo vamos a ahcer de forma imperativa, indicando directamente los valores. En el valor de la variable `HOST_DB` tendremos que poner el nombre del servicio creado para mariadb, para que se pueda realizar la conexión:
+
+```
+kubectl set env deployment/citas USER_DB=usuario
+kubectl set env deployment/citas PASSWORD_DB=usuario_pass
+kubectl set env deployment/citas HOST_DB=mariadb-service
+```
+
+Y la actualización de la versión del despliegue también la hacemos de forma imperativa:
 
 
+```
+kubectl set image deploy citas contenedor-citas=josedom24/citas-backend:v2
+```
 
+Esperamos unos segundos y comprobamos que los 3 pods del despliegue se han creado de nuevo con la nueva versión:
+
+```
+kubectl get pod -l app=citas
+NAME                     READY   STATUS    RESTARTS   AGE
+citas-767594d7c5-d2f8v   1/1     Running   0          3s
+citas-767594d7c5-dr5sg   1/1     Running   0          6s
+citas-767594d7c5-s8jvg   1/1     Running   0          10s
+```
+
+Y podemos acceder de nuevo a la página web y comprobamos que el servicio que está devolviendo la información de la citas es `citas-backend` **versión 2** y además comporbamos que el id de las citas son mayores que 5 (la versión 1 tenía sólo 6 citas):
+
+![web](img/web3.png)
