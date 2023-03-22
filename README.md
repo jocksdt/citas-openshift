@@ -196,7 +196,7 @@ citasweb-5b58c6d6d7-d4tv5   1/1     Running   0          10m
 
 Y si accedemos a la página web y vamos refrescando, observamos como se balancea la carga entre los distintos pods:
 
-![web](img/web2.png)
+![web](img/web2.gif)
 
 
 
