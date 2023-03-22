@@ -4,7 +4,7 @@ metadata:
   name: citas
 spec:
   rules:
-  - host: 192.168.39.193.nip.io
+  - host: 192.168.39.229.nip.io
     http:
       paths:
       - path: /
