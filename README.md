@@ -318,6 +318,10 @@ citas-767594d7c5-dr5sg   1/1     Running   0          6s
 citas-767594d7c5-s8jvg   1/1     Running   0          10s
 ```
 
-Y podemos acceder de nuevo a la página web y comprobamos que el servicio que está devolviendo la información de la citas es `citas-backend` **versión 2** y además comporbamos que el id de las citas son mayores que 5 (la versión 1 tenía sólo 6 citas):
+Y podemos acceder de nuevo a la página web y comprobamos que el servicio que está devolviendo la información de la citas es `citas-backend` **versión 2** y además comporbamos que tenmos más citas (en la tabla hay 16 citas), la versión 1 tenía sólo 6 citas:
 
 ![web](img/web3.png)
+
+## Nota final
+
+Dentro de los distintos directorios donde se encuentra la información de los tres despliegues, puedes encontrar el códiggo de las distintas aplicaciones, así como los fichero `Dockerfile` que te permiten crear las imágenes de las aplicaciones.
