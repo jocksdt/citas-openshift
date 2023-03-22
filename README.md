@@ -173,4 +173,31 @@ Y si accedemos la URL del ingress podemos acceder a la aplicación:
 
 ![web](img/web1.png)
 
-Como podemos observar, además de los datos de la cita, también se muestra la versión de `citas-backend` que está ofreciendo la información
+Como podemos observar, además de los datos de la cita, también se muestra la versión de `citas-backend` que está ofreciendo la información.
+
+### Escalando la aplicación `citas-backend`
+
+Podemos escalar cualquiera de los dos despliegues que hemos realizado. En este caso vamos a escalar el número de pods del despliegue de `citas-backend` y podremos observar como en la información que se muestra en la página web va cambiado el nombre del hostname demostrando, de esta manera, que se esta balanceando la carga entre los pods del despliegue:
+
+```
+kubectl scale deployment.apps/citas --replicas=3
+```
+
+Y vemos los nuevos pods que se han creado:
+
+```
+kubectl get pod
+NAME                        READY   STATUS    RESTARTS   AGE
+citas-7844596959-6hq6q      1/1     Running   0          21m
+citas-7844596959-d5tfg      1/1     Running   0          5s
+citas-7844596959-x2ckl      1/1     Running   0          5s
+citasweb-5b58c6d6d7-d4tv5   1/1     Running   0          10m
+```
+
+Y si accedemos a la página web y vamos refrescando, observamos como se balancea la carga entre los distintos pods:
+
+![web](img/web2.png)
+
+
+
+
