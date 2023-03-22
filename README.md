@@ -11,8 +11,8 @@ En este ejemplo se van a desplegar 2 microservicios (`citas-backend` y `citas-fr
     La API RESTfull tiene los siguientes endpoints:
 
     * URL: `/`
-        MÉTODO: GET  
-        Devuelve la cadena "qotd" para comprobar que el servicio está funcionando.
+    MÉTODO: GET  
+    Devuelve la cadena "qotd" para comprobar que el servicio está funcionando.
     * URL: `/version`
         MÉTODO: GET 
         Devuelve una cadena con la versión de la aplicación.
