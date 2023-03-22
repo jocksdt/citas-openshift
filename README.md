@@ -14,20 +14,20 @@ En este ejemplo se van a desplegar 2 microservicios (`citas-backend` y `citas-fr
         * MÉTODO: GET  
         * Devuelve la cadena "qotd" para comprobar que el servicio está funcionando.
     * URL: `/version`
-        MÉTODO: GET 
-        Devuelve una cadena con la versión de la aplicación.
+        * MÉTODO: GET 
+        * Devuelve una cadena con la versión de la aplicación.
     * URL: `/writtenin`
-        MÉTODO: GET
-        Devuelve una cadena con la versión de python con el que se ha programado.
+        * MÉTODO: GET
+        * Devuelve una cadena con la versión de python con el que se ha programado.
     * URL: `/quotes`
-        MÉTODO: GET
-        Devuelve un JSON con todas las citas.
+        * MÉTODO: GET
+        * Devuelve un JSON con todas las citas.
     * URL: `/quotes/random`
-        MÉTODO: GET
-        Devuelve un JSON con una cita elegida aleatoriamente.
+        * MÉTODO: GET
+        * Devuelve un JSON con una cita elegida aleatoriamente.
     * URL: `/quotes/{id}`
-        MÉTODO: GET
-        Devuelve un JSON con la cita correspondiente al identificador indicado en la url.
+        * MÉTODO: GET
+        * Devuelve un JSON con la cita correspondiente al identificador indicado en la url.
 * `citas-frontend`: Es una aplicación python flask que crea una página web dinámica con una cita aleatoria que lee de `citas-backend` para ello conecta al servicio RESTful usando el nombre indicado en la variable de entorno `CITAS_SERVIDOR`.
 
 
