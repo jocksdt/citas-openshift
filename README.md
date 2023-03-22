@@ -217,7 +217,7 @@ Veamos los distintos recursos que vamos a crear para el despliegue de la base de
 
 * Un recurso ConfigMap donde guardamos el usuario (que hemos llamado `usuario`) y el nombre de la base de datos (que hemos llamado `citas`) que se van a crear.
 * Un recurso Secret donde guardamos las contraseñas: la del usuario `usuario` (`usuario_pass`) y la del usuario `root` de la base de datos (`admin`).
-* Un recurso VoolumenPersistentClaim donde solicitamos un volumen de 5G para montar el directorio `var/lib/mysql` del servidor mariadb y por lo tanto hacerla persistente.
+* Un recurso VoolumenPersistentClaim donde solicitamos un volumen de 5Gb para montar el directorio `var/lib/mysql` del servidor mariadb y por lo tanto hacerla persistente.
 * Un recurso service de tipo ClusterIP para poder acceder internamente a la base de datos.
 * Un recurso deployment par desplegar la base de datos.
 
