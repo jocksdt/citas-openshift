@@ -130,7 +130,7 @@ Como puedes observar nos da cuatro informaciones: la cita, el autor, el identifi
 
 ## Despliegue de la aplicación `citas-frontend` 
 
-Esta aplicación nos va a mostrar una aplicación web que hace una consulta al servicio anterior y muestra una cita aleatoria en pantalla. En realidad no es necesario que el la aplicación `citas-abackend` sea accesible desde el exterior, es suficiente el haber creado el recurso service de tipo ClusterIP apra que esta aplicación pueda acceder a ella, por lo tanto vamos a eliminar el ingress creado anteriormente:
+Esta aplicación nos va a mostrar una aplicación web que hace una consulta al servicio anterior y muestra una cita aleatoria en pantalla. En realidad no es necesario que la aplicación `citas-backend` sea accesible desde el exterior, es suficiente el haber creado el recurso service de tipo ClusterIP para que esta aplicación pueda acceder a ella, por lo tanto vamos a eliminar el ingress creado anteriormente:
 
 ```
 kubectl delete ingress.networking.k8s.io/citas
@@ -142,6 +142,15 @@ A continuación desplegamos la aplicación, creando un deployment, un service y 
 kubectl apply -f deployment.yaml
 kubectl apply -f service.yaml
 kubectl apply -f ingress.yaml
+```
+
+Nos fijamos que en el despliegue se ha creado una variable de entorno que se debe llamar `CITAS_SERVIDOR`, con el valor del nombre del host para accede a la aplicación `citas-backend` y el puerto que está utilizando. En nuestro caso indicaremos el nombre del recurso service que hemos creado pra acceder a la aplicación `citas-bbackend`:
+
+```
+        ...
+        env:
+            - name: CITAS_SERVER
+              value: citas:10000
 ```
 
 Y comprobamos los recursos que tenemos en este momento:
@@ -209,8 +218,8 @@ Veamos los distintos recursos que vamos a crear para el despliegue de la base de
 * Un recurso ConfigMap donde guardamos el usuario (que hemos llamado `usuario`) y el nombre de la base de datos (que hemos llamado `citas`) que se van a crear.
 * Un recurso Secret donde guardamos las contraseñas: la del usuario `usuario` (`usuario_pass`) y la del usuario `root` de la base de datos (`admin`).
 * Un recurso VoolumenPersistentClaim donde solicitamos un volumen de 5G para montar el directorio `var/lib/mysql` del servidor mariadb y por lo tanto hacerla persistente.
-* Un recurso service de tipo ClusterIp para poder acceder internamente a la base de datos.
-* Un recurso deployment par deplegar la base de datos.
+* Un recurso service de tipo ClusterIP para poder acceder internamente a la base de datos.
+* Un recurso deployment par desplegar la base de datos.
 
 Por lo tanto para realizar todo el despliegue ejecutamos desde el directorio `mariadb/k8s`:
 
