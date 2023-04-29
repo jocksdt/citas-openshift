@@ -1,8 +1,6 @@
 # For more information, please refer to https://aka.ms/vscode-docker-python
 FROM registry.access.redhat.com/ubi8/python-38:latest
 
-EXPOSE 10000
-
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE 1
 
