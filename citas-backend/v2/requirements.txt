@@ -1,4 +1,4 @@
 # To ensure app dependencies are ported from your virtual environment/host machine into your container, run 'pip freeze > requirements.txt' in the terminal to overwrite this file
-flask==2.2.3
+flask==2.2.2
 mysqlclient
-Werkzeug==2.3.7
+Werkzeug==2.2.2

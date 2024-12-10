@@ -6,7 +6,6 @@ import socket
 import json
 import sys
 import MySQLdb
-from urllib.parse import quote as url_quote
 
 quotes = []
 quoteCount = 0
